@@ -1,0 +1,12 @@
+{
+  "version": 2,
+  "dgSpecHash": "OhZwjs72bQcytHTfA0QR6PIOOX23e3a26+rsNrGYcLCBGV6gTpUb54Krp+FP7qIXmNmM4QWw+ifK/QkZuWMEPA==",
+  "success": true,
+  "projectFilePath": "C:\\Users\\Johna\\Current Classes\\Cs 5410\\Centipede\\Centipede\\Centipede.csproj",
+  "expectedPackageFiles": [
+    "C:\\Users\\Johna\\.nuget\\packages\\monogame.content.builder.task\\3.8.0.1641\\monogame.content.builder.task.3.8.0.1641.nupkg.sha512",
+    "C:\\Users\\Johna\\.nuget\\packages\\monogame.framework.desktopgl\\3.8.0.1641\\monogame.framework.desktopgl.3.8.0.1641.nupkg.sha512",
+    "C:\\Users\\Johna\\.nuget\\packages\\newtonsoft.json\\13.0.1\\newtonsoft.json.13.0.1.nupkg.sha512"
+  ],
+  "logs": []
+}
