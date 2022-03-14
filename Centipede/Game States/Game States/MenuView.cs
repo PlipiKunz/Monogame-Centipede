@@ -40,10 +40,10 @@ namespace CS5410
 
                     if (m_currentSelection < getMinMenuOption())
                     {
-                        m_currentSelection = getMinMenuOption();
+                        m_currentSelection = getMaxMenuOption();
                     }
                     else if (m_currentSelection > getMaxMenuOption()) {
-                        m_currentSelection = getMaxMenuOption();
+                        m_currentSelection =  getMinMenuOption();
                     }
                 }
 

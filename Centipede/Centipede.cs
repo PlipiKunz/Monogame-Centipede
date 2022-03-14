@@ -24,6 +24,7 @@ namespace CS5410
         {
             m_graphics.PreferredBackBufferWidth = 1920;
             m_graphics.PreferredBackBufferHeight = 1080;
+            
 
             m_graphics.ApplyChanges();
 

@@ -5,27 +5,37 @@ using Microsoft.Xna.Framework.Input;
 
 using CS5410.Input;
 using CS5410.Persistence;
+using CS5410.CentepedeGame;
+
 
 namespace CS5410
 {
     public class GamePlayView : GameStateView
     {
-        private SpriteFont m_font;
-        private string message = "Isn't this game fun!";
 
         public static bool keyboardUpToDate = false;
         private KeyboardInput m_keyboardInput;
 
+        private GameModel m_gameModel;
+        private GameRenderer m_gameRenderer;
 
         public override void initialize(GraphicsDevice graphicsDevice, GraphicsDeviceManager graphics)
         {
             base.initialize(graphicsDevice, graphics);
+
+            m_gameModel = new GameModel();
+            m_gameModel.initialize(new Vector2(graphics.PreferredBackBufferWidth, graphics.PreferredBackBufferHeight));
+
+            m_gameRenderer = new GameRenderer();
+            m_gameRenderer.initialize(graphicsDevice, graphics, m_gameModel);
+
             m_keyboardInput = new KeyboardInput();
         }
 
         public override void loadContent(ContentManager contentManager)
         {
-            m_font = contentManager.Load<SpriteFont>("Fonts/menu");
+
+            m_gameRenderer.loadContent(contentManager);
         }
 
         public override GameStateEnum processInput(GameTime gameTime)
@@ -35,16 +45,14 @@ namespace CS5410
                 return GameStateEnum.MainMenu;
             }
 
-            return GameStateEnum.GamePlay;
+            return checkIfDone();
         }
 
         public override void render(GameTime gameTime)
         {
             m_spriteBatch.Begin();
 
-            Vector2 stringSize = m_font.MeasureString(message);
-            m_spriteBatch.DrawString(m_font, message,
-                new Vector2(m_graphics.PreferredBackBufferWidth / 2 - stringSize.X / 2, m_graphics.PreferredBackBufferHeight / 2 - stringSize.Y), Color.Yellow);
+            m_gameRenderer.render(gameTime);
 
             m_spriteBatch.End();
         }
@@ -53,40 +61,34 @@ namespace CS5410
         {
             m_keyboardInput.Update(gameTime);
             updateKeyboardBindings();
+
+            m_gameModel.update(gameTime);
         }
 
         private void updateKeyboardBindings() {
             if (!keyboardUpToDate) {
                 m_keyboardInput = new KeyboardInput();
-                m_keyboardInput.registerCommand(KeyboardPersistence.actionToKey[KeyboardActions.Left], false, moveLeft);
-                m_keyboardInput.registerCommand(KeyboardPersistence.actionToKey[KeyboardActions.Right], false, moveRight);
-                m_keyboardInput.registerCommand(KeyboardPersistence.actionToKey[KeyboardActions.Up], false, moveUp);
-                m_keyboardInput.registerCommand(KeyboardPersistence.actionToKey[KeyboardActions.Down], false, moveDown);
-                m_keyboardInput.registerCommand(KeyboardPersistence.actionToKey[KeyboardActions.Fire], true, fire);
+                m_keyboardInput.registerCommand(KeyboardPersistence.actionToKey[KeyboardActions.Left], false, m_gameModel.moveLeft);
+                m_keyboardInput.registerCommand(KeyboardPersistence.actionToKey[KeyboardActions.Right], false,  m_gameModel.moveRight);
+                m_keyboardInput.registerCommand(KeyboardPersistence.actionToKey[KeyboardActions.Up], false,  m_gameModel.moveUp);
+                m_keyboardInput.registerCommand(KeyboardPersistence.actionToKey[KeyboardActions.Down], false,  m_gameModel.moveDown);
+                m_keyboardInput.registerCommand(KeyboardPersistence.actionToKey[KeyboardActions.Fire], true, m_gameModel.fire);
                 keyboardUpToDate = true;
             }
         }
 
+        private GameStateEnum checkIfDone() {
+            if (m_gameModel.isDone)
+            {
+                done();
+                return GameStateEnum.MainMenu;
+            }
+            
+            return GameStateEnum.GamePlay;
+        }
 
-        private void moveLeft(GameTime gameTime, float scale)
-        {
-            message = "left";
-        }
-        private void moveRight(GameTime gameTime, float scale)
-        {
-            message = "right";
-        }
-        private void moveUp(GameTime gameTime, float scale)
-        {
-            message = "up";
-        }
-        private void moveDown(GameTime gameTime, float scale)
-        {
-            message = "down";
-        }
-        private void fire(GameTime gameTime, float scale)
-        {
-            message = "fire";
+        private void done() {
+            m_gameModel.reset();
         }
     }
 }
