@@ -32,6 +32,7 @@ namespace CS5410.CentepedeGame
 
         public Player player;
         public List<CentepedeSegment> segments;
+        public List<Mushroom> mushrooms;
 
         public void initialize(Vector2 resolution)
         {
@@ -49,6 +50,7 @@ namespace CS5410.CentepedeGame
 
             player = new Player();
             segments = new List<CentepedeSegment>();
+            mushrooms = new List<Mushroom>();
             reset();
         }
 
@@ -66,6 +68,7 @@ namespace CS5410.CentepedeGame
         {
             player.resetPos();
             segments = CentepedeSegment.generateCentepede(0, 0, standardWidth, standardHeight, 12);
+            mushrooms = Mushroom.generateMushroomGrid(standardHeight * 3, 0, standardWidth, standardHeight); 
         }
 
         public void update(GameTime gameTime)

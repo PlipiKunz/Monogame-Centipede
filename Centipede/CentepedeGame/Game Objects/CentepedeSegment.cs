@@ -15,9 +15,15 @@ namespace CS5410.CentepedeGame.ObjectsInGame
         Body,
     }
 
+    public enum CentepedeMode { 
+        Normal,
+        Poisoned
+    }
+
     public class CentepedeSegment : ObjectInGame
     {
         public SegmentType segmentType;
+        public CentepedeMode segmentMode;
         public CentepedeSegment nextSegment;
         public bool hit;
 
@@ -32,6 +38,7 @@ namespace CS5410.CentepedeGame.ObjectsInGame
             base.initialize(x, y, width, height);
 
             segmentType = st;
+            segmentMode = CentepedeMode.Normal;
             nextSegment = null;
             hit = false;
 
@@ -49,45 +56,62 @@ namespace CS5410.CentepedeGame.ObjectsInGame
 
         public override void update(GameTime gameTime, Collider c)
         {
+            if (moveCollisionOne(gameTime, c)) { 
+            }
+            
+        }
+        //first pass collsion and movement
+        private bool moveCollisionOne( GameTime gameTime, Collider c) {
             int prevX = x;
             int prevY = y;
-
             move(xDirection, 0, gameTime, pixelsToMoveEverySecond);
+
             List<collisionType> boundaryCollisions = c.screenBoundaryCollision(this);
             if (boundaryCollisions.Count > 0)
             {
-                if (boundaryCollisions.Contains(collisionType.ScreenTop) || boundaryCollisions.Contains(collisionType.ScreenBottom))
-                {
-                    y = prevY;
-
-                    if (boundaryCollisions.Contains(collisionType.ScreenTop)) { 
-                        yDirection = 1;
-                    }
-                    if (boundaryCollisions.Contains(collisionType.ScreenBottom))
-                    {
-                        yDirection = -1;
-                    }
-                }
-                if (boundaryCollisions.Contains(collisionType.ScreenLeft) || boundaryCollisions.Contains(collisionType.ScreenRight))
+                if (horizontalCollision(boundaryCollisions))
                 {
                     x = prevX;
+                    move(xDirection, 0, gameTime, pixelsToMoveEverySecond);
+                }
 
-                    if (boundaryCollisions.Contains(collisionType.ScreenLeft))
-                    {
-                        xDirection = 1;
-                    }
-                    if (boundaryCollisions.Contains(collisionType.ScreenRight))
-                    {
-                        xDirection = -1;
-                    }
+                if (verticalCollision(boundaryCollisions))
+                {
+                    y = prevY;
+                    y += yDirection * height;
                 }
 
                 y += yDirection * height;
-                move(xDirection,0, gameTime, pixelsToMoveEverySecond);
+                return true;
             }
-        }
 
-       
+            return false;   
+        }        
+
+        private bool verticalCollision(List<collisionType> boundaryCollisions)
+        {
+            //if segment has collided with the top of the screen or the bottom of the screen, change y direction and set mode back to normal
+            if (boundaryCollisions.Contains(collisionType.ScreenTop) || boundaryCollisions.Contains(collisionType.ScreenBottom))
+            {
+                segmentMode = CentepedeMode.Normal;
+
+                yDirection *= -1;
+
+                return true;
+            }
+            return false;
+        }
+        private bool horizontalCollision(List<collisionType> boundaryCollisions)
+        {
+            //if segment has collided with the left or right of the screen, change y direction and set mode back to normal
+            if (boundaryCollisions.Contains(collisionType.ScreenLeft) || boundaryCollisions.Contains(collisionType.ScreenRight))
+            {
+                xDirection *= -1;
+                return true;
+            }
+
+            return false;
+        }
 
         public static void update(GameTime gameTime, List<CentepedeSegment> segments, Collider c) {
             foreach (CentepedeSegment segment in segments)
@@ -96,7 +120,7 @@ namespace CS5410.CentepedeGame.ObjectsInGame
             }
         }
 
-        public static List<CentepedeSegment> generateCentepede(int startX, int startY, int segmentWidth, int segmentHeight, int numberOfSegments) { 
+       public static List<CentepedeSegment> generateCentepede(int startX, int startY, int segmentWidth, int segmentHeight, int numberOfSegments) { 
             List<CentepedeSegment> centepede = new List<CentepedeSegment>();
 
             CentepedeSegment prevSegment = null;
@@ -131,6 +155,5 @@ namespace CS5410.CentepedeGame.ObjectsInGame
 
             return centepede;
         }
-
     }
 }

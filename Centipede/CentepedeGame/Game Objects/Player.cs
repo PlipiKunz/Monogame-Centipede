@@ -43,6 +43,13 @@ namespace CS5410.CentepedeGame.ObjectsInGame
                 }
             }
 
+            List<collisionType> enemyCollisions = c.checkCollision(this, new List<collisionType> {collisionType.Centepede});
+            if (enemyCollisions.Count > 0)
+            {
+                hit = true;
+                lives -= 1;
+            }
+
             prevX = x;
             prevY = y;
         }

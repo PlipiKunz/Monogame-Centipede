@@ -53,6 +53,7 @@ namespace CS5410.CentepedeGame
 
             renderCentepede(gameTime);
 
+            renderUI();
             m_spriteBatch.End();
         }
 
@@ -69,6 +70,19 @@ namespace CS5410.CentepedeGame
         public void renderCentepedeSegment(GameTime gameTime, CentepedeSegment s)
         {
             m_objectRenderer.renderObject(gameTime, s, s.segmentType == SegmentType.Head ? Color.Red: Color.Green);
+        }
+
+        public void renderUI() { 
+            int lives = m_model.player.lives;
+
+            int x_pos = 0;
+            int y_pos = 0;
+            for (int i = 0; i < lives; i++)
+            {
+                m_objectRenderer.renderRect(new Rectangle(x_pos, y_pos, (int)(m_model.standardWidth*.75), (int)(m_model.standardHeight*.75)), Color.Blue);
+                x_pos += (int)(m_model.standardWidth);
+            }
+
         }
     }
 }

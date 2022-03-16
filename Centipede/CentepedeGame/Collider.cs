@@ -18,6 +18,7 @@ namespace CS5410.CentepedeGame
         ScreenLeft,
         ScreenRight,
         PlayerMovermentTop,
+        Centepede
     }
 
 
@@ -35,7 +36,8 @@ namespace CS5410.CentepedeGame
             collsionFunctionPairs.Add(collisionType.ScreenTop, ScreenTopCollision);
             collsionFunctionPairs.Add(collisionType.ScreenBottom, ScreenBottomCollision);
             collsionFunctionPairs.Add(collisionType.ScreenLeft, ScreenLeftCollision);
-            collsionFunctionPairs.Add(collisionType.ScreenRight, ScreenRightCollision); 
+            collsionFunctionPairs.Add(collisionType.ScreenRight, ScreenRightCollision);
+            collsionFunctionPairs.Add(collisionType.Centepede, CentepedeCollision);
         }
 
         public List<collisionType> screenBoundaryCollision(ObjectInGame toCheck) { 
@@ -54,6 +56,16 @@ namespace CS5410.CentepedeGame
             }
 
             return collisions;
+        }
+
+        private bool CentepedeCollision(ObjectInGame toCheck) {
+
+            foreach (CentepedeSegment c in m_model.segments) {
+                if (collsion(toCheck, c)) { 
+                    return true;
+                }
+            }
+            return false;
         }
 
         private bool ScreenTopCollision(ObjectInGame toCheck) {
@@ -83,7 +95,10 @@ namespace CS5410.CentepedeGame
         private bool collsion(ObjectInGame a, ObjectInGame b) {
             //if they arent the same object, collision can occur
             if (a != b) { 
-                
+                Rectangle aR = a.getBoundingBox();
+                Rectangle bR = b.getBoundingBox();
+
+                return aR.Intersects(bR);
             }
 
             return false;
