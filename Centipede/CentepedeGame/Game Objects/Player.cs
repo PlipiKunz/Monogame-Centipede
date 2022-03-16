@@ -15,15 +15,36 @@ namespace CS5410.CentepedeGame.ObjectsInGame
         public bool hit;
         public float pixelsToMoveEverySecond = 250f / 1000f;
 
-        public void initialize(int   x, int  y, int  width, int  height)
+        private int prevX;
+        private int prevY;
+
+
+        new public void initialize(int   x, int  y, int  width, int  height)
         { 
             base.initialize(x, y, width, height);
             lives = 3;
             hit = false;
+
+            prevX = x;
+            prevY = y;
         }
 
-        public override void update(GameTime gameTime) { 
+        public override void update(GameTime gameTime, Collider c) {
 
+            List<collisionType> boundaryCollisions = c.screenBoundaryCollision(this);
+            if (boundaryCollisions.Count > 0) {
+                if (boundaryCollisions.Contains(collisionType.ScreenTop) || boundaryCollisions.Contains(collisionType.ScreenBottom))
+                {
+                    y = prevY;
+                }
+                if (boundaryCollisions.Contains(collisionType.ScreenLeft) || boundaryCollisions.Contains(collisionType.ScreenRight))
+                {
+                    x = prevX;
+                }
+            }
+
+            prevX = x;
+            prevY = y;
         }
 
         public void moveLeft(GameTime gameTime) { 

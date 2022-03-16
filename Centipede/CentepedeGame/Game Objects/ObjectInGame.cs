@@ -44,7 +44,7 @@ namespace CS5410.CentepedeGame.ObjectsInGame
             return new Rectangle(adjustedX,adjustedY,adjustedW,adjustedH);
         }
 
-        public abstract void update(GameTime gameTime);
+        public abstract void update(GameTime gameTime, Collider c);
 
         public void resetPos() {
             x = origionalX;

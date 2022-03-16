@@ -17,10 +17,10 @@ namespace CS5410.CentepedeGame
 
         Vector2 screenResolution;
 
-        float widthResolutionScaler;
-        float heightResolutionScaler;
-        int standardHeight;
-        int standardWidth;
+        public float widthResolutionScaler;
+        public float heightResolutionScaler;
+        public int standardHeight;
+        public int standardWidth;
 
         public int score;
         //if the game is over
@@ -28,19 +28,17 @@ namespace CS5410.CentepedeGame
         //pause is used when the player is hit, game resumes when any input is given
         public bool paused;
 
+        public Collider collider;
+
         public Player player;
         public List<CentepedeSegment> segments;
 
         public void initialize(Vector2 resolution)
         {
-            screenResolution = resolution;
-            player = new Player();
-            segments = new List<CentepedeSegment>();
-            reset();
-        }
+            collider = new Collider();
+            collider.initialize(this);
 
-        public void reset()
-        {
+            screenResolution = resolution;
             widthResolutionScaler = screenResolution.X;
             heightResolutionScaler = screenResolution.Y;
 
@@ -48,6 +46,14 @@ namespace CS5410.CentepedeGame
             standardWidth = (int)(50 * (1980 / widthResolutionScaler));
             standardHeight = (int)(50 * (1020 / heightResolutionScaler));
 
+
+            player = new Player();
+            segments = new List<CentepedeSegment>();
+            reset();
+        }
+
+        public void reset()
+        {
             int score = 0;
             isDone = false;
             paused = false;
@@ -62,15 +68,14 @@ namespace CS5410.CentepedeGame
             segments = CentepedeSegment.generateCentepede(0, 0, standardWidth, standardHeight, 12);
         }
 
-
         public void update(GameTime gameTime)
         {
             //if game hasnt been paused (after the player was hit)
             if (!paused)
             {
                 //update game items
-                player.update(gameTime);
-                CentepedeSegment.update(gameTime, segments);
+                player.update(gameTime, collider);
+                CentepedeSegment.update(gameTime, segments, collider);
 
 
                 //see if player has died and if so set the game as done

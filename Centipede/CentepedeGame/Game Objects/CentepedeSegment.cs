@@ -47,19 +47,52 @@ namespace CS5410.CentepedeGame.ObjectsInGame
             }
         }
 
-        public override void update(GameTime gameTime)
+        public override void update(GameTime gameTime, Collider c)
         {
             int prevX = x;
             int prevY = y;
 
-            move(xDirection, 0,gameTime, pixelsToMoveEverySecond);
+            move(xDirection, 0, gameTime, pixelsToMoveEverySecond);
+            List<collisionType> boundaryCollisions = c.screenBoundaryCollision(this);
+            if (boundaryCollisions.Count > 0)
+            {
+                if (boundaryCollisions.Contains(collisionType.ScreenTop) || boundaryCollisions.Contains(collisionType.ScreenBottom))
+                {
+                    y = prevY;
 
+                    if (boundaryCollisions.Contains(collisionType.ScreenTop)) { 
+                        yDirection = 1;
+                    }
+                    if (boundaryCollisions.Contains(collisionType.ScreenBottom))
+                    {
+                        yDirection = -1;
+                    }
+                }
+                if (boundaryCollisions.Contains(collisionType.ScreenLeft) || boundaryCollisions.Contains(collisionType.ScreenRight))
+                {
+                    x = prevX;
+
+                    if (boundaryCollisions.Contains(collisionType.ScreenLeft))
+                    {
+                        xDirection = 1;
+                    }
+                    if (boundaryCollisions.Contains(collisionType.ScreenRight))
+                    {
+                        xDirection = -1;
+                    }
+                }
+
+                y += yDirection * height;
+                move(xDirection,0, gameTime, pixelsToMoveEverySecond);
+            }
         }
 
-        public static void update(GameTime gameTime, List<CentepedeSegment> segments) {
+       
+
+        public static void update(GameTime gameTime, List<CentepedeSegment> segments, Collider c) {
             foreach (CentepedeSegment segment in segments)
             {
-                segment.update(gameTime);
+                segment.update(gameTime, c);
             }
         }
 
