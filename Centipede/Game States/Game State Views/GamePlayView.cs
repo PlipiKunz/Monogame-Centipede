@@ -14,9 +14,10 @@ namespace CS5410
     {
 
         public static bool keyboardUpToDate = false;
+
         private KeyboardInput m_keyboardInput;
 
-        private GameModel m_gameModel;
+        public static GameModel m_gameModel;
         private GameRenderer m_gameRenderer;
 
         public override void initialize(GraphicsDevice graphicsDevice, GraphicsDeviceManager graphics)
@@ -42,7 +43,8 @@ namespace CS5410
         {
             if (Keyboard.GetState().IsKeyDown(Keys.Escape))
             {
-                return GameStateEnum.MainMenu;
+
+                return GameStateEnum.EndGameConfirm;
             }
 
             return checkIfDone();
@@ -63,6 +65,8 @@ namespace CS5410
             updateKeyboardBindings();
 
             m_gameModel.update(gameTime);
+
+            ScorePersist.score = m_gameModel.score;
         }
 
         private void updateKeyboardBindings() {
@@ -81,13 +85,17 @@ namespace CS5410
             if (m_gameModel.isDone)
             {
                 done();
-                return GameStateEnum.MainMenu;
+                return GameStateEnum.GameFinished;
             }
             
             return GameStateEnum.GamePlay;
         }
 
-        private void done() {
+        public static void done()
+        {
+            ScorePersist.score = m_gameModel.score;
+            ScorePersist.updateScores();
+
             m_gameModel.reset();
         }
     }

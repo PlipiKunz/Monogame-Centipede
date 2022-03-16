@@ -7,6 +7,9 @@ using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 
+using CS5410.CentepedeGame.Renderers;
+using CS5410.CentepedeGame.ObjectsInGame;
+
 namespace CS5410.CentepedeGame
 {
     public class GameRenderer
@@ -19,6 +22,8 @@ namespace CS5410.CentepedeGame
 
         private SpriteFont m_font;
 
+        private ObjectRenderer m_objectRenderer;
+
         public virtual void initialize(GraphicsDevice graphicsDevice, GraphicsDeviceManager graphics, GameModel gameModel)
         {
             m_graphics = graphics;
@@ -26,31 +31,44 @@ namespace CS5410.CentepedeGame
             m_model = gameModel;
 
             screen = new Rectangle(0, 0, m_graphics.PreferredBackBufferWidth, m_graphics.PreferredBackBufferHeight);
+
+            m_objectRenderer = new ObjectRenderer();
+            m_objectRenderer.initialize(graphicsDevice, graphics);
         }
 
         public void loadContent(ContentManager contentManager)
         {
             m_font = contentManager.Load<SpriteFont>("Fonts/menu");
+
+            m_objectRenderer.loadContent(contentManager);
         }
 
         public void render(GameTime gameTime)
         {
             m_spriteBatch.Begin();
 
+            m_objectRenderer.renderRect(screen, Color.YellowGreen);
+
             renderPlayer(gameTime);
 
+            renderCentepede(gameTime);
 
             m_spriteBatch.End();
         }
 
         public void renderPlayer(GameTime gameTime) {
-            Rectangle playerRect = m_model.player.getBoundingBox();
-            Vector2 stringSize = m_font.MeasureString(m_model.message);
-            m_spriteBatch.DrawString(
-                m_font,
-                m_model.message,
-                new Vector2(playerRect.X, playerRect.Y),
-                Color.Blue);
+            m_objectRenderer.renderObject(gameTime,m_model.player,Color.White);
+        }
+
+        public void renderCentepede(GameTime gameTime) {
+            foreach (CentepedeSegment segment in m_model.segments) {
+                renderCentepedeSegment(gameTime, segment);
+            }
+        }
+
+        public void renderCentepedeSegment(GameTime gameTime, CentepedeSegment s)
+        {
+            m_objectRenderer.renderObject(gameTime, s, s.segmentType == SegmentType.Head ? Color.Red: Color.Green);
         }
     }
 }

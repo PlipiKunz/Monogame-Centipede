@@ -25,3 +25,4 @@ C:\Users\Johna\Current Classes\Cs 5410\Centipede\Centipede\obj\Debug\netcoreapp3
 C:\Users\Johna\Current Classes\Cs 5410\Centipede\Centipede\obj\Debug\netcoreapp3.1\Centipede.pdb
 C:\Users\Johna\Current Classes\Cs 5410\Centipede\Centipede\obj\Debug\netcoreapp3.1\Centipede.genruntimeconfig.cache
 C:\Users\Johna\Current Classes\Cs 5410\Centipede\Centipede\bin\Debug\netcoreapp3.1\Newtonsoft.Json.dll
+C:\Users\Johna\Current Classes\Cs 5410\Centipede\Centipede\bin\Debug\netcoreapp3.1\Content\Sprites\SquareSprite.xnb

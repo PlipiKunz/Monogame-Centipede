@@ -7,6 +7,8 @@
         HighScores,
         Controls,
         Credits,
-        Exit
+        Exit,
+        EndGameConfirm,
+        GameFinished
     }
 }
