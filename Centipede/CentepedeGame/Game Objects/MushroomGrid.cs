@@ -12,10 +12,11 @@ namespace CS5410.CentepedeGame.ObjectsInGame
 
     public class Mushroomgrid
     {
+        Random random;
+
         public List<Mushroom> mushrooms;
 
         private int upperY;
-        private int lowerY;
         private int upperX;
         private int standardWidth;
         private int standardHeight;
@@ -23,16 +24,16 @@ namespace CS5410.CentepedeGame.ObjectsInGame
         private int rows;
         private int columns;
 
-        new public void initialize(int  upperY, int  lowerY,  int upperX, int  standardwidth, int  standardheight)
+        new public void initialize(int  upperY,   int upperX, int  standardwidth, int  standardheight)
         { 
+            random = new Random();
             mushrooms = new List<Mushroom>();
             this.upperY = upperY;
-            this.lowerY = lowerY;
             this.upperX= upperX;
             this.standardWidth = standardwidth;
             this.standardHeight = standardheight;
 
-            rows = (lowerY - upperY) / standardWidth;
+            rows = upperY / standardWidth;
             columns = upperX / standardHeight;
 
             resetMushrooms();
@@ -40,9 +41,17 @@ namespace CS5410.CentepedeGame.ObjectsInGame
 
         public void resetMushrooms() { 
             mushrooms.Clear();
-            addMushroom(0,0);
-            addMushroom(0, 0);
-            addMushroom(2, 3);
+
+            for (int r = 2; r < rows-2; r++)
+            {
+                for (int c = 0; c < columns; c++) {
+
+                    if (random.NextDouble() > .9)
+                    {
+                        addMushroom(c, r);
+                    }
+                }
+            }
         }
 
         public void update(GameTime gameTime, Collider c) {
@@ -60,7 +69,7 @@ namespace CS5410.CentepedeGame.ObjectsInGame
         private void addMushroom(int x_index, int y_index) {
             if (x_index >= 0 && y_index >= 0 && x_index < columns && y_index < rows) {
                 int x_pos = x_index * standardWidth;
-                int y_pos = y_index * standardHeight + upperY;
+                int y_pos = y_index * standardHeight;
                 if (!mushroomInLoc(x_pos, y_pos)) { 
                     Mushroom new_mushroom = new Mushroom();
                     new_mushroom.initialize(x_pos, y_pos, standardWidth, standardHeight);

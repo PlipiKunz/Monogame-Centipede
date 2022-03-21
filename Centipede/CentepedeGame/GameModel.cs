@@ -60,7 +60,7 @@ namespace CS5410.CentepedeGame
             isDone = false;
             paused = false;
             player.initialize((int)(widthResolutionScaler * .5f), (int)(heightResolutionScaler - standardHeight), standardWidth, standardHeight);
-            mushrooms.initialize((int)(heightResolutionScaler/5),4*(int)(heightResolutionScaler/5), (int)widthResolutionScaler, standardWidth, standardHeight);
+            mushrooms.initialize((int)heightResolutionScaler, (int)widthResolutionScaler, standardWidth, standardHeight);
 
             resetScreen();
         }
