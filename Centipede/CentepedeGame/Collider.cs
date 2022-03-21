@@ -18,7 +18,8 @@ namespace CS5410.CentepedeGame
         ScreenLeft,
         ScreenRight,
         PlayerMovermentTop,
-        Centepede
+        Centepede,
+        Mushroom
     }
 
 
@@ -38,6 +39,8 @@ namespace CS5410.CentepedeGame
             collsionFunctionPairs.Add(collisionType.ScreenLeft, ScreenLeftCollision);
             collsionFunctionPairs.Add(collisionType.ScreenRight, ScreenRightCollision);
             collsionFunctionPairs.Add(collisionType.Centepede, CentepedeCollision);
+            collsionFunctionPairs.Add(collisionType.PlayerMovermentTop, PlayerMovementTopCollision);
+            collsionFunctionPairs.Add(collisionType.Mushroom, MushroomCOllision);
         }
 
         public List<collisionType> screenBoundaryCollision(ObjectInGame toCheck) { 
@@ -67,7 +70,6 @@ namespace CS5410.CentepedeGame
             }
             return false;
         }
-
         private bool ScreenTopCollision(ObjectInGame toCheck) {
             Rectangle collsionRect = toCheck.getBoundingBox();
             if (collsionRect.Y < 0) return true;
@@ -92,6 +94,22 @@ namespace CS5410.CentepedeGame
             return false;
         }
 
+        private bool MushroomCOllision(ObjectInGame toCheck) {
+            foreach (Mushroom m in m_model.mushrooms.mushrooms) {
+                if (collsion(toCheck, m)) {
+                    return true;
+                }
+            }
+            return false;
+        }
+
+        private bool PlayerMovementTopCollision(ObjectInGame toCheck)
+        {
+            Rectangle collsionRect = toCheck.getBoundingBox();
+            if (collsionRect.Y < 3*m_model.heightResolutionScaler/4) return true;
+            return false;
+
+        }
         private bool collsion(ObjectInGame a, ObjectInGame b) {
             //if they arent the same object, collision can occur
             if (a != b) { 

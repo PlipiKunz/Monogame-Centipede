@@ -32,7 +32,7 @@ namespace CS5410.CentepedeGame
 
         public Player player;
         public List<CentepedeSegment> segments;
-        public List<Mushroom> mushrooms;
+        public Mushroomgrid mushrooms;
 
         public void initialize(Vector2 resolution)
         {
@@ -50,7 +50,7 @@ namespace CS5410.CentepedeGame
 
             player = new Player();
             segments = new List<CentepedeSegment>();
-            mushrooms = new List<Mushroom>();
+            mushrooms = new Mushroomgrid();
             reset();
         }
 
@@ -60,6 +60,7 @@ namespace CS5410.CentepedeGame
             isDone = false;
             paused = false;
             player.initialize((int)(widthResolutionScaler * .5f), (int)(heightResolutionScaler - standardHeight), standardWidth, standardHeight);
+            mushrooms.initialize((int)(heightResolutionScaler/5),4*(int)(heightResolutionScaler/5), (int)widthResolutionScaler, standardWidth, standardHeight);
 
             resetScreen();
         }
@@ -68,7 +69,7 @@ namespace CS5410.CentepedeGame
         {
             player.resetPos();
             segments = CentepedeSegment.generateCentepede(0, 0, standardWidth, standardHeight, 12);
-            mushrooms = Mushroom.generateMushroomGrid(standardHeight * 3, 0, standardWidth, standardHeight); 
+            mushrooms.resetMushrooms();
         }
 
         public void update(GameTime gameTime)
@@ -79,7 +80,7 @@ namespace CS5410.CentepedeGame
                 //update game items
                 player.update(gameTime, collider);
                 CentepedeSegment.update(gameTime, segments, collider);
-
+                mushrooms.update(gameTime, collider);
 
                 //see if player has died and if so set the game as done
                 if (player.lives <= 0)

@@ -53,6 +53,8 @@ namespace CS5410.CentepedeGame
 
             renderCentepede(gameTime);
 
+            renderMushrooms(gameTime);
+
             renderUI();
             m_spriteBatch.End();
         }
@@ -61,12 +63,22 @@ namespace CS5410.CentepedeGame
             m_objectRenderer.renderObject(gameTime,m_model.player,Color.White);
         }
 
+        public void renderMushrooms(GameTime gameTime) {
+            foreach (Mushroom m in m_model.mushrooms.mushrooms) {
+                renderMushroom(gameTime, m);
+            }
+        }
+
+        public void renderMushroom(GameTime gameTime, Mushroom m)
+        {
+            m_objectRenderer.renderObject(gameTime, m, Color.Yellow);
+        }
+
         public void renderCentepede(GameTime gameTime) {
             foreach (CentepedeSegment segment in m_model.segments) {
                 renderCentepedeSegment(gameTime, segment);
             }
         }
-
         public void renderCentepedeSegment(GameTime gameTime, CentepedeSegment s)
         {
             m_objectRenderer.renderObject(gameTime, s, s.segmentType == SegmentType.Head ? Color.Red: Color.Green);

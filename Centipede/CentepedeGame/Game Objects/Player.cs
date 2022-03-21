@@ -31,9 +31,11 @@ namespace CS5410.CentepedeGame.ObjectsInGame
 
         public override void update(GameTime gameTime, Collider c) {
 
-            List<collisionType> boundaryCollisions = c.screenBoundaryCollision(this);
-            if (boundaryCollisions.Count > 0) {
-                if (boundaryCollisions.Contains(collisionType.ScreenTop) || boundaryCollisions.Contains(collisionType.ScreenBottom))
+            List<collisionType> boundaryCollisions = c.screenBoundaryCollision(this) ;
+            boundaryCollisions.AddRange(c.checkCollision(this, new List<collisionType>() { collisionType.PlayerMovermentTop }));
+
+            if (boundaryCollisions.Count > 0 ) {
+                if (boundaryCollisions.Contains(collisionType.ScreenTop) || boundaryCollisions.Contains(collisionType.ScreenBottom) || boundaryCollisions.Contains(collisionType.PlayerMovermentTop))
                 {
                     y = prevY;
                 }

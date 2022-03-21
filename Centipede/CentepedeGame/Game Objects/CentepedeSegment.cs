@@ -67,6 +67,7 @@ namespace CS5410.CentepedeGame.ObjectsInGame
             move(xDirection, 0, gameTime, pixelsToMoveEverySecond);
 
             List<collisionType> boundaryCollisions = c.screenBoundaryCollision(this);
+            boundaryCollisions.AddRange(c.checkCollision(this, new List<collisionType>() { collisionType.Mushroom }));
             if (boundaryCollisions.Count > 0)
             {
                 if (horizontalCollision(boundaryCollisions))
@@ -104,7 +105,7 @@ namespace CS5410.CentepedeGame.ObjectsInGame
         private bool horizontalCollision(List<collisionType> boundaryCollisions)
         {
             //if segment has collided with the left or right of the screen, change y direction and set mode back to normal
-            if (boundaryCollisions.Contains(collisionType.ScreenLeft) || boundaryCollisions.Contains(collisionType.ScreenRight))
+            if (boundaryCollisions.Contains(collisionType.ScreenLeft) || boundaryCollisions.Contains(collisionType.ScreenRight) || boundaryCollisions.Contains(collisionType.Mushroom))
             {
                 xDirection *= -1;
                 return true;

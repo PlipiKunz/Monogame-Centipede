@@ -1,0 +1,84 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Text;
+
+using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Content;
+using Microsoft.Xna.Framework.Graphics;
+using Microsoft.Xna.Framework.Input;
+
+namespace CS5410.CentepedeGame.ObjectsInGame
+{
+
+    public class Mushroomgrid
+    {
+        public List<Mushroom> mushrooms;
+
+        private int upperY;
+        private int lowerY;
+        private int upperX;
+        private int standardWidth;
+        private int standardHeight;
+
+        private int rows;
+        private int columns;
+
+        new public void initialize(int  upperY, int  lowerY,  int upperX, int  standardwidth, int  standardheight)
+        { 
+            mushrooms = new List<Mushroom>();
+            this.upperY = upperY;
+            this.lowerY = lowerY;
+            this.upperX= upperX;
+            this.standardWidth = standardwidth;
+            this.standardHeight = standardheight;
+
+            rows = (lowerY - upperY) / standardWidth;
+            columns = upperX / standardHeight;
+
+            resetMushrooms();
+        }
+
+        public void resetMushrooms() { 
+            mushrooms.Clear();
+            addMushroom(0,0);
+            addMushroom(0, 0);
+            addMushroom(2, 3);
+        }
+
+        public void update(GameTime gameTime, Collider c) {
+            foreach (Mushroom mushroom in mushrooms) { 
+                mushroom.update(gameTime, c);
+            }
+        }
+
+        public void addMushroomSpecificLoc(int x, int y) {
+            int properX = (int)(x / standardWidth) ;
+            int properY = (int)(y / standardHeight);
+            addMushroom(properX, properY);
+        }
+
+        private void addMushroom(int x_index, int y_index) {
+            if (x_index >= 0 && y_index >= 0 && x_index < columns && y_index < rows) {
+                int x_pos = x_index * standardWidth;
+                int y_pos = y_index * standardHeight + upperY;
+                if (!mushroomInLoc(x_pos, y_pos)) { 
+                    Mushroom new_mushroom = new Mushroom();
+                    new_mushroom.initialize(x_pos, y_pos, standardWidth, standardHeight);
+                    mushrooms.Add(new_mushroom);
+                }
+            }
+        }
+
+        public bool mushroomInLoc(int x_pos, int y_pos) {
+            foreach (Mushroom mushroom in mushrooms)
+            {
+                if (mushroom.x == x_pos && mushroom.y == y_pos) { 
+                    return true;
+                }
+            }
+
+            return false;            
+        }
+    }
+}
+    

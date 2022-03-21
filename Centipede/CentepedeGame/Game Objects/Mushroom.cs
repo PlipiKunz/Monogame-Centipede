@@ -15,6 +15,9 @@ namespace CS5410.CentepedeGame.ObjectsInGame
         public int lives;
         public bool hit;
 
+        public bool makePoison;
+        public bool remove;
+
 
         new public void initialize(int   x, int  y, int  width, int  height)
         { 
@@ -26,13 +29,6 @@ namespace CS5410.CentepedeGame.ObjectsInGame
         public override void update(GameTime gameTime, Collider c) {
         }
 
-        public static List<Mushroom> generateMushroomGrid(int startX, int startY, int segmentWidth, int segmentHeight) { 
-            List<Mushroom> mushrooms = new List<Mushroom>();
-
-
-
-            return mushrooms;
-        }
     }
 }
     
