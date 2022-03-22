@@ -56,7 +56,7 @@ namespace CS5410
                 // I split the first one's parameters on separate lines to help you see them better
 
                 float bottom = drawMenuItem(m_fontMenu, "Game Over", 200, Color.Red);
-                bottom = drawMenuItem(m_fontMenu, "Final Score: " + ScorePersist.score, bottom, Color.Red);
+                bottom = drawMenuItem(m_fontMenu, "Final Score: " + ScorePersistence.score, bottom, Color.Red);
                 bottom = drawMenuItem(m_fontMenu, "Play Again?", bottom, Color.Red);
                 bottom += 25;
 

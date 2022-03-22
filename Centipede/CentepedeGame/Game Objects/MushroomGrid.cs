@@ -16,13 +16,13 @@ namespace CS5410.CentepedeGame.ObjectsInGame
 
         public List<Mushroom> mushrooms;
 
-        private int upperY;
+        public int upperY;
         private int upperX;
-        private int standardWidth;
-        private int standardHeight;
+        public int standardWidth;
+        public int standardHeight;
 
-        private int rows;
-        private int columns;
+        public int rows;
+        public int columns;
 
         new public void initialize(int  upperY,   int upperX, int  standardwidth, int  standardheight)
         { 

@@ -43,7 +43,7 @@ namespace CS5410
         {
             if (Keyboard.GetState().IsKeyDown(Keys.Escape))
             {
-
+                ScorePersistence.score = m_gameModel.score;
                 return GameStateEnum.EndGameConfirm;
             }
 
@@ -65,8 +65,6 @@ namespace CS5410
             updateKeyboardBindings();
 
             m_gameModel.update(gameTime);
-
-            ScorePersist.score = m_gameModel.score;
         }
 
         private void updateKeyboardBindings() {
@@ -93,8 +91,7 @@ namespace CS5410
 
         public static void done()
         {
-            ScorePersist.score = m_gameModel.score;
-            ScorePersist.updateScores();
+            ScorePersistence.addScore(m_gameModel.score);
 
             m_gameModel.reset();
         }

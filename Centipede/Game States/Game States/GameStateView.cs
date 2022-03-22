@@ -18,5 +18,17 @@ namespace CS5410
         public abstract GameStateEnum processInput(GameTime gameTime);
         public abstract void render(GameTime gameTime);
         public abstract void update(GameTime gameTime);
+        protected float drawMenuItem(SpriteFont font, string text, float y, Color color)
+        {
+            Vector2 stringSize = font.MeasureString(text);
+            m_spriteBatch.DrawString(
+                font,
+                text,
+                new Vector2(m_graphics.PreferredBackBufferWidth / 2 - stringSize.X / 2, y),
+                color);
+
+            return y + stringSize.Y;
+        }
+
     }
 }

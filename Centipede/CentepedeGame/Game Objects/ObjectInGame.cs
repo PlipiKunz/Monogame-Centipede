@@ -68,6 +68,16 @@ namespace CS5410.CentepedeGame.ObjectsInGame
             y += (int)(y_movement * pixelsToMoveEverySecond * gameTime.ElapsedGameTime.TotalMilliseconds);
         }
 
+        protected bool bulletCollision(GameTime game, Collider c)
+        {
+            List<collisionType> bulletCollision = c.checkCollision(this, new List<collisionType>() { collisionType.Bullet });
+            if (bulletCollision.Count > 0)
+            {
+                return true;
+            }
+
+            return false;
+        }
     }
 
 }

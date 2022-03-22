@@ -14,10 +14,11 @@ using CS5410.Input;
 
 namespace CS5410.Persistence
 {
-    public class Persist
+    public class PersistControls
     {
         static private bool saving = false;
         static private bool loading = false;
+
         static private string controlsFileName = "Controls.xml";
         static public bool? controlsExists = null;
         static public Dictionary<KeyboardActions, Keys> m_loadedControls = null;
@@ -26,35 +27,23 @@ namespace CS5410.Persistence
         {
             lock (this)
             {
-                if (!Persist.saving)
+                if (!saving)
                 {
-                    Persist.saving = true;
+                    saving = true;
                     finalizeSaveControlsAsync(JsonConvert.SerializeObject(KeyboardPersistence.actionToKey));
-                }
-            }
-        }
-
-        public void save(String json, string fileName)
-        {
-            lock (this)
-            {
-                if (!Persist.saving)
-                {
-                    Persist.saving = true;
-                    finalizeSaveControlsAsync(json);
                 }
             }
         }
         private async void finalizeSaveControlsAsync(String dict)
         {
-            
+
             await Task.Run(() =>
             {
                 using (IsolatedStorageFile storage = IsolatedStorageFile.GetUserStoreForApplication())
                 {
                     try
                     {
-                        using (IsolatedStorageFileStream fs = storage.OpenFile(Persist.controlsFileName, FileMode.OpenOrCreate))
+                        using (IsolatedStorageFileStream fs = storage.OpenFile(controlsFileName, FileMode.OpenOrCreate))
                         {
                             if (fs != null)
                             {
@@ -69,7 +58,7 @@ namespace CS5410.Persistence
                     }
                 }
 
-                Persist.saving = false;
+                saving = false;
             });
         }
 
@@ -77,9 +66,9 @@ namespace CS5410.Persistence
         {
             lock (this)
             {
-                if (!Persist.loading)
+                if (!loading)
                 {
-                    Persist.loading = true;
+                    loading = true;
 #pragma warning disable CS4014 // Because this call is not awaited, execution of the current method continues before the call is completed
                     finalizeLoadControlsAsync();
 #pragma warning restore CS4014 // Because this call is not awaited, execution of the current method continues before the call is completed
@@ -94,9 +83,9 @@ namespace CS5410.Persistence
                 {
                     try
                     {
-                        if (storage.FileExists(Persist.controlsFileName))
+                        if (storage.FileExists(controlsFileName))
                         {
-                            using (IsolatedStorageFileStream fs = storage.OpenFile(Persist.controlsFileName, FileMode.Open))
+                            using (IsolatedStorageFileStream fs = storage.OpenFile(controlsFileName, FileMode.Open))
                             {
                                 if (fs != null)
                                 {
@@ -112,7 +101,8 @@ namespace CS5410.Persistence
                                 }
                             }
                         }
-                        else {
+                        else
+                        {
                             controlsExists = false;
                         }
                     }
@@ -122,7 +112,108 @@ namespace CS5410.Persistence
                     }
                 }
 
-                Persist.loading = false;
+                loading = false;
+            });
+        }
+    }
+
+    public class PersistScore {
+        static private bool saving = false;
+        static private bool loading = false;
+        static private string scoresFileName = "Scores.xml";
+        static public bool? scoresExists = null;
+        static public List<int> m_loadedScores = null;
+
+        public void saveScores()
+        {
+            lock (this)
+            {
+                if (!PersistScore.saving)
+                {
+                    PersistScore.saving = true;
+                    finalizeSaveScoresAsync(JsonConvert.SerializeObject(ScorePersistence.scores));
+                }
+            }
+        }
+        private async void finalizeSaveScoresAsync(String dict)
+        {
+
+            await Task.Run(() =>
+            {
+                using (IsolatedStorageFile storage = IsolatedStorageFile.GetUserStoreForApplication())
+                {
+                    try
+                    {
+                        using (IsolatedStorageFileStream fs = storage.OpenFile(PersistScore.scoresFileName, FileMode.OpenOrCreate))
+                        {
+                            if (fs != null)
+                            {
+                                XmlSerializer mySerializer = new XmlSerializer(typeof(String));
+                                mySerializer.Serialize(fs, dict);
+                            }
+                        }
+                    }
+                    catch (IsolatedStorageException)
+                    {
+                        // Ideally show something to the user, but this is demo code :)
+                    }
+                }
+
+                PersistScore.saving = false;
+            });
+        }
+
+        public void loadScores()
+        {
+            lock (this)
+            {
+                if (!PersistScore.loading)
+                {
+                    PersistScore.loading = true;
+#pragma warning disable CS4014 // Because this call is not awaited, execution of the current method continues before the call is completed
+                    finalizeLoadScoresAsync();
+#pragma warning restore CS4014 // Because this call is not awaited, execution of the current method continues before the call is completed
+                }
+            }
+        }
+        private async Task finalizeLoadScoresAsync()
+        {
+            await Task.Run(() =>
+            {
+                using (IsolatedStorageFile storage = IsolatedStorageFile.GetUserStoreForApplication())
+                {
+                    try
+                    {
+                        if (storage.FileExists(PersistScore.scoresFileName))
+                        {
+                            using (IsolatedStorageFileStream fs = storage.OpenFile(PersistScore.scoresFileName, FileMode.Open))
+                            {
+                                if (fs != null)
+                                {
+                                    XmlSerializer mySerializer = new XmlSerializer(typeof(String));
+
+                                    m_loadedScores = JsonConvert.DeserializeObject<List<int>>((String)mySerializer.Deserialize(fs));
+
+                                    scoresExists = true;
+                                }
+                                else
+                                {
+                                    scoresExists = false;
+                                }
+                            }
+                        }
+                        else
+                        {
+                            scoresExists = false;
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        scoresExists = false;
+                    }
+                }
+
+                PersistScore.loading = false;
             });
         }
     }

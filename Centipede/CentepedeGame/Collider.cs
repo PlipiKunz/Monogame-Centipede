@@ -19,7 +19,12 @@ namespace CS5410.CentepedeGame
         ScreenRight,
         PlayerMovermentTop,
         Centepede,
-        Mushroom
+        Mushroom,
+        Bullet,
+        flea,
+        scorpion,
+        poison,
+        spider
     }
 
 
@@ -41,11 +46,21 @@ namespace CS5410.CentepedeGame
             collsionFunctionPairs.Add(collisionType.Centepede, CentepedeCollision);
             collsionFunctionPairs.Add(collisionType.PlayerMovermentTop, PlayerMovementTopCollision);
             collsionFunctionPairs.Add(collisionType.Mushroom, MushroomCOllision);
+            collsionFunctionPairs.Add(collisionType.Bullet, BulletsCollision);
+            collsionFunctionPairs.Add(collisionType.flea, FleaCollision);
+            collsionFunctionPairs.Add(collisionType.scorpion, ScorpCollision);
+            collsionFunctionPairs.Add(collisionType.poison, PoisonMushroomCOllision);
+            collsionFunctionPairs.Add(collisionType.spider, SpiderCollision);
         }
 
         public List<collisionType> screenBoundaryCollision(ObjectInGame toCheck) { 
             return checkCollision(toCheck, new List<collisionType> { collisionType.ScreenTop,collisionType.ScreenBottom,collisionType.ScreenLeft,collisionType.ScreenRight});
         }
+        public List<collisionType> enemyCollision(ObjectInGame toCheck)
+        {
+            return checkCollision(toCheck, new List<collisionType> { collisionType.Centepede, collisionType.flea, collisionType.scorpion, collisionType.spider});
+        }
+
 
         public List<collisionType> checkCollision(ObjectInGame toCheck, List<collisionType> collisionsToCheck) { 
             List<collisionType> collisions = new List<collisionType>();
@@ -97,6 +112,69 @@ namespace CS5410.CentepedeGame
         private bool MushroomCOllision(ObjectInGame toCheck) {
             foreach (Mushroom m in m_model.mushrooms.mushrooms) {
                 if (collsion(toCheck, m)) {
+                    return true;
+                }
+            }
+            return false;
+        }
+
+        private bool PoisonMushroomCOllision(ObjectInGame toCheck)
+        {
+            foreach (Mushroom m in m_model.mushrooms.mushrooms)
+            {
+                if (m.type == mushroomType.poison)
+                {
+                    if (collsion(toCheck, m))
+                    {
+                        return true;
+                    }
+                }
+            }
+            return false;
+        }
+
+        private bool BulletsCollision(ObjectInGame toCheck)
+        {
+            foreach (Bullet b in m_model.bullets)
+            {
+                if (collsion(toCheck, b))
+                {
+                    return true;
+                }
+            }
+            return false;
+        }
+
+        private bool FleaCollision(ObjectInGame toCheck)
+        {
+            if (m_model.oh.f != null)
+            {
+                if (collsion(toCheck, m_model.oh.f))
+                {
+                    return true;
+                }
+            }
+            return false;
+        }
+
+        private bool ScorpCollision(ObjectInGame toCheck)
+        {
+            if (m_model.oh.s != null)
+            {
+                if (collsion(toCheck, m_model.oh.s))
+                {
+                    return true;
+                }
+            }
+            return false;
+        }
+
+        private bool SpiderCollision(ObjectInGame toCheck)
+        {
+            if (m_model.oh.sp != null)
+            {
+                if (collsion(toCheck, m_model.oh.sp))
+                {
                     return true;
                 }
             }

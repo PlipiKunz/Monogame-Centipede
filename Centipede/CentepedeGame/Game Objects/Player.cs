@@ -13,7 +13,7 @@ namespace CS5410.CentepedeGame.ObjectsInGame
     {
         public int lives;
         public bool hit;
-        public float pixelsToMoveEverySecond = 250f / 1000f;
+        public float pixelsToMoveEverySecond = 500f / 1000f;
 
         private int prevX;
         private int prevY;
@@ -32,7 +32,7 @@ namespace CS5410.CentepedeGame.ObjectsInGame
         public override void update(GameTime gameTime, Collider c) {
 
             List<collisionType> boundaryCollisions = c.screenBoundaryCollision(this) ;
-            boundaryCollisions.AddRange(c.checkCollision(this, new List<collisionType>() { collisionType.PlayerMovermentTop }));
+            boundaryCollisions.AddRange(c.checkCollision(this, new List<collisionType>() { collisionType.PlayerMovermentTop, collisionType.Mushroom }));
 
             if (boundaryCollisions.Count > 0 ) {
                 if (boundaryCollisions.Contains(collisionType.ScreenTop) || boundaryCollisions.Contains(collisionType.ScreenBottom) || boundaryCollisions.Contains(collisionType.PlayerMovermentTop))
@@ -43,9 +43,14 @@ namespace CS5410.CentepedeGame.ObjectsInGame
                 {
                     x = prevX;
                 }
+
+                if (boundaryCollisions.Contains(collisionType.Mushroom)) {
+                    y = prevY;
+                    x = prevX;
+                }
             }
 
-            List<collisionType> enemyCollisions = c.checkCollision(this, new List<collisionType> {collisionType.Centepede});
+            List<collisionType> enemyCollisions = c.enemyCollision(this);
             if (enemyCollisions.Count > 0)
             {
                 hit = true;

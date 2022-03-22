@@ -29,9 +29,14 @@ namespace CS5410
         {
             m_spriteBatch.Begin();
 
-            Vector2 stringSize = m_font.MeasureString(MESSAGE);
-            m_spriteBatch.DrawString(m_font, MESSAGE,
-                new Vector2(m_graphics.PreferredBackBufferWidth / 2 - stringSize.X / 2, m_graphics.PreferredBackBufferHeight / 2 - stringSize.Y), Color.Yellow);
+            float bottom = drawMenuItem(m_font,"High Scores", 200, Color.Yellow);
+
+            int i = 1;
+            foreach (int score in Persistence.ScorePersistence.scores)
+            {
+                bottom = drawMenuItem(m_font, "(" + i + "): " + score, bottom, Color.Yellow);
+                i++;
+            }
 
             m_spriteBatch.End();
         }

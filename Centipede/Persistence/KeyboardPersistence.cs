@@ -11,7 +11,7 @@ namespace CS5410.Persistence
     public static class KeyboardPersistence
     {
 
-        private static Persist p = new Persist();
+        private static PersistControls p = new PersistControls();
 
         public static Dictionary<KeyboardActions, Keys> actionToKey = new Dictionary<KeyboardActions, Keys>() {
             {KeyboardActions.Left, Keys.Left },
@@ -29,12 +29,12 @@ namespace CS5410.Persistence
             p.loadControls();
             while (!loaded)
             {
-                if (Persist.m_loadedControls != null)
+                if (PersistControls.m_loadedControls != null)
                 {
-                    actionToKey = Persist.m_loadedControls;
+                    actionToKey = PersistControls.m_loadedControls;
                     loaded = true;
                 }
-                else if (Persist.m_loadedControls == null && Persist.controlsExists == false)
+                else if (PersistControls.m_loadedControls == null && PersistControls.controlsExists == false)
                 {
                     loaded = true;
                 }

@@ -55,6 +55,10 @@ namespace CS5410.CentepedeGame
 
             renderMushrooms(gameTime);
 
+            renderBullets(gameTime);
+
+            renderOptionals(gameTime);
+
             renderUI();
             m_spriteBatch.End();
         }
@@ -62,16 +66,61 @@ namespace CS5410.CentepedeGame
         public void renderPlayer(GameTime gameTime) {
             m_objectRenderer.renderObject(gameTime,m_model.player,Color.White);
         }
-
         public void renderMushrooms(GameTime gameTime) {
             foreach (Mushroom m in m_model.mushrooms.mushrooms) {
                 renderMushroom(gameTime, m);
             }
         }
 
-        public void renderMushroom(GameTime gameTime, Mushroom m)
+        public void renderOptionals(GameTime gameTime)
         {
-            m_objectRenderer.renderObject(gameTime, m, Color.Yellow);
+            if (m_model.oh.f != null) {
+                renderFlea(gameTime, m_model.oh.f);
+            }
+            if (m_model.oh.s != null)
+            {
+                renderScorpion(gameTime, m_model.oh.s);
+            }
+            if (m_model.oh.sp != null) { 
+                renderSpider(gameTime, m_model.oh.sp);
+            }
+
+        }
+
+        public void renderFlea(GameTime gameTime, Flea f) {
+            m_objectRenderer.renderObject(gameTime, f, Color.Beige);
+        }
+        public void renderScorpion(GameTime gameTime, Scorpion s)
+        {
+            m_objectRenderer.renderObject(gameTime, s, Color.Purple);
+        }
+        public void renderSpider(GameTime gameTime, Spider s)
+        {
+            m_objectRenderer.renderObject(gameTime, s, Color.DarkBlue);
+        }
+
+        public void renderBullets(GameTime gameTime)
+        {
+            foreach (Bullet b in m_model.bullets)
+            {
+                renderBullet(gameTime, b);
+            }
+        }
+
+        public void renderBullet(GameTime gameTime, Bullet b)
+        {
+            m_objectRenderer.renderObject(gameTime, b, Color.AliceBlue);
+        }
+
+    public void renderMushroom(GameTime gameTime, Mushroom m)
+        {
+            if (m.type == mushroomType.normal)
+            {
+                m_objectRenderer.renderObject(gameTime, m, Color.Yellow);
+            }
+            else {
+                m_objectRenderer.renderObject(gameTime, m, Color.LightGoldenrodYellow);
+            }
         }
 
         public void renderCentepede(GameTime gameTime) {

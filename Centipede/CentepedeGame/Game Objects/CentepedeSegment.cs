@@ -56,10 +56,24 @@ namespace CS5410.CentepedeGame.ObjectsInGame
 
         public override void update(GameTime gameTime, Collider c)
         {
-            if (moveCollisionOne(gameTime, c)) { 
+            if (!bulletCollision(gameTime, c))
+            {
+                if (segmentMode == CentepedeMode.Normal)
+                {
+                    moveCollisionOne(gameTime, c);
+                }
+                else
+                {
+                    moveCollisionTwo(gameTime, c); ;
+                }
             }
-            
+            else { 
+                this.hit = true;
+            }
+
         }
+
+
         //first pass collsion and movement
         private bool moveCollisionOne( GameTime gameTime, Collider c) {
             int prevX = x;
@@ -67,27 +81,55 @@ namespace CS5410.CentepedeGame.ObjectsInGame
             move(xDirection, 0, gameTime, pixelsToMoveEverySecond);
 
             List<collisionType> boundaryCollisions = c.screenBoundaryCollision(this);
-            boundaryCollisions.AddRange(c.checkCollision(this, new List<collisionType>() { collisionType.Mushroom }));
+            boundaryCollisions.AddRange(c.checkCollision(this, new List<collisionType>() { collisionType.Mushroom, collisionType.poison }));
             if (boundaryCollisions.Count > 0)
             {
-                if (horizontalCollision(boundaryCollisions))
+                if (boundaryCollisions.Contains(collisionType.poison))
                 {
-                    x = prevX;
-                    move(xDirection, 0, gameTime, pixelsToMoveEverySecond);
+                    segmentMode = CentepedeMode.Poisoned;
                 }
+                else
+                {
+                    if (horizontalCollision(boundaryCollisions))
+                    {
+                        x = prevX;
+                        move(xDirection, 0, gameTime, pixelsToMoveEverySecond);
+                    }
 
+                    if (verticalCollision(boundaryCollisions))
+                    {
+                        y = prevY;
+                        y += yDirection * height;
+                    }
+
+                    y += yDirection * height;
+                }
+                return true;
+            }
+
+            return false;   
+        }
+
+        private bool moveCollisionTwo(GameTime gameTime, Collider c)
+        {
+            int prevX = x;
+            int prevY = y;
+            move(0, yDirection, gameTime, pixelsToMoveEverySecond);
+
+            List<collisionType> boundaryCollisions = c.checkCollision(this, new List<collisionType>() { collisionType.ScreenBottom});
+            if (verticalCollision(boundaryCollisions))
+            {
                 if (verticalCollision(boundaryCollisions))
                 {
                     y = prevY;
                     y += yDirection * height;
                 }
 
-                y += yDirection * height;
                 return true;
             }
 
-            return false;   
-        }        
+            return false;
+        }
 
         private bool verticalCollision(List<collisionType> boundaryCollisions)
         {
@@ -149,7 +191,7 @@ namespace CS5410.CentepedeGame.ObjectsInGame
                     }
 
                     //set the postions
-                    startX += segmentWidth + 1;
+                    startX += segmentWidth + 5;
                 }
 
             }

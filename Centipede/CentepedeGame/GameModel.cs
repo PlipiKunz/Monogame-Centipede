@@ -33,6 +33,8 @@ namespace CS5410.CentepedeGame
         public Player player;
         public List<CentepedeSegment> segments;
         public Mushroomgrid mushrooms;
+        public List<Bullet> bullets;
+        public objectHandler oh;
 
         public void initialize(Vector2 resolution)
         {
@@ -51,17 +53,19 @@ namespace CS5410.CentepedeGame
             player = new Player();
             segments = new List<CentepedeSegment>();
             mushrooms = new Mushroomgrid();
+            bullets = new List<Bullet>();
+            oh = new objectHandler();
             reset();
         }
 
         public void reset()
         {
-            int score = 0;
+            score = 0;
             isDone = false;
             paused = false;
             player.initialize((int)(widthResolutionScaler * .5f), (int)(heightResolutionScaler - standardHeight), standardWidth, standardHeight);
             mushrooms.initialize((int)heightResolutionScaler, (int)widthResolutionScaler, standardWidth, standardHeight);
-
+            oh.initialize(mushrooms);
             resetScreen();
         }
 
@@ -70,6 +74,8 @@ namespace CS5410.CentepedeGame
             player.resetPos();
             segments = CentepedeSegment.generateCentepede(0, 0, standardWidth, standardHeight, 12);
             mushrooms.resetMushrooms();
+            bullets.Clear();
+            oh.reset();
         }
 
         public void update(GameTime gameTime)
@@ -77,10 +83,18 @@ namespace CS5410.CentepedeGame
             //if game hasnt been paused (after the player was hit)
             if (!paused)
             {
+                if (segments.Count == 0) {
+                    segments = CentepedeSegment.generateCentepede(0, 0, standardWidth, standardHeight, 12);
+                }
+                foreach (Bullet bullet in bullets)
+                {
+                    bullet.update(gameTime, collider);
+                }
                 //update game items
                 player.update(gameTime, collider);
                 CentepedeSegment.update(gameTime, segments, collider);
                 mushrooms.update(gameTime, collider);
+                oh.update(gameTime, collider);
 
                 //see if player has died and if so set the game as done
                 if (player.lives <= 0)
@@ -97,6 +111,11 @@ namespace CS5410.CentepedeGame
             //performs hit checks and takes appropriate action on objects that have been hit
             centepedeHitCheck();
             playerHitCheck();
+            bulletHitCheck();
+            mushroomHitCheck();
+            fleaHItCheck();
+            scorpHItCheck();
+            spiderHItCheck();   
         }
 
         public void playerHitCheck() {
@@ -118,12 +137,22 @@ namespace CS5410.CentepedeGame
 
                 if (segment.hit)
                 {
+                    if (segment.segmentType == SegmentType.Head)
+                    {
+                        score += 100;
+                    }
+                    else {
+                        score += 10;
+                    }
+
                     segment.split();
                     if (prevSegment != null)
                     {
                         prevSegment.nextSegment = null;
                     }
                     segmentsToRemove.Add(i);
+                    //add mushroom
+                    mushrooms.addMushroomSpecificLoc(segment.x, segment.y);
                 }
 
                 prevSegment = segment;
@@ -136,6 +165,101 @@ namespace CS5410.CentepedeGame
 
                 segments.RemoveAt(segmentsToRemove[i] - removedLocations);
                 removedLocations++;
+                
+            }
+        }
+
+        public void bulletHitCheck() {
+            List<int> bulletsToRemove = new List<int>();
+            for (int i = 0; i < bullets.Count; i++)
+            {
+                Bullet b =  bullets[i];
+
+                if (b.hit)
+                {
+                    bulletsToRemove.Add(i);
+                }
+            }
+
+            //removes 
+            int removedLocations = 0;
+            for (int i = 0; i < bulletsToRemove.Count; i++)
+            {
+                bullets.RemoveAt(bulletsToRemove[i] - removedLocations);
+                removedLocations++;
+
+            }
+        }
+
+        public void fleaHItCheck() {
+            if (oh.f != null) {
+                if (oh.f.hit) {
+                    score += 200;
+                      oh.f = null;
+                }
+            }
+        }
+
+        public void scorpHItCheck()
+        {
+            if (oh.s != null)
+            {
+                if (oh.s.hit)
+                {
+                    score += 1000;
+                    oh.s = null;
+                }
+            }
+        }
+
+        public void spiderHItCheck()
+        {
+            if (oh.sp != null)
+            {
+                if (oh.sp.hit)
+                {
+                    if (oh.sp.y > ((screenResolution.Y / 2) + ((1 / 3) * (screenResolution.Y / 2))))
+                    {
+                        score += 900;
+                    }
+                    else if (oh.sp.y > ((screenResolution.Y / 2) + ((2 / 3) * (screenResolution.Y / 2))))
+                    {
+                        score += 600;
+                    }
+                    else {
+                        score += 300;
+                    }
+
+                    oh.sp = null;
+                }
+            }
+        }
+
+
+        public void mushroomHitCheck() {
+            List<int> mushroomsToRemove = new List<int>();
+            for (int i = 0; i < mushrooms.mushrooms.Count; i++)
+            {
+                Mushroom m = mushrooms.mushrooms[i];
+
+                if (m.hit) { 
+                    m.hit = false;
+                        score += 4;
+                }
+
+                if (m.lives <= 0)
+                {
+                    mushroomsToRemove.Add(i);
+                }
+            }
+
+            //removes 
+            int removedLocations = 0;
+            for (int i = 0; i < mushroomsToRemove.Count; i++)
+            {
+                mushrooms.mushrooms.RemoveAt(mushroomsToRemove[i] - removedLocations);
+                removedLocations++;
+
             }
         }
 
@@ -161,7 +285,20 @@ namespace CS5410.CentepedeGame
         }
         public void fire(GameTime gameTime, float scale)
         {
+            addBullet();
             onInput();
+        }
+
+        private void addBullet() {
+            if (bullets.Count < 3)
+            {
+                int bulletHeight = 10;
+                int bulletWidth = 5;
+
+                Bullet b = new Bullet();
+                b.initialize((player.x + (player.width / 2)), player.y - bulletHeight, bulletWidth, bulletHeight);
+                bullets.Add(b);
+            }
         }
 
         public void onInput() {

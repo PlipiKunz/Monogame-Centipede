@@ -48,6 +48,7 @@ namespace CS5410
         protected override void LoadContent()
         {
             KeyboardPersistence.getPersistedActionToKey();
+            ScorePersistence.getPersistedScores();
 
             // Give all game states a chance to load their content
             foreach (var item in m_states)
@@ -88,6 +89,7 @@ namespace CS5410
 
             //save the control bindings
             KeyboardPersistence.persistActionToKey();
+            ScorePersistence.persistScores();
         }
     }
 }
