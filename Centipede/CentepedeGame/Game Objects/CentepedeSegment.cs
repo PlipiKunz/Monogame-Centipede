@@ -87,6 +87,7 @@ namespace CS5410.CentepedeGame.ObjectsInGame
                 if (boundaryCollisions.Contains(collisionType.poison))
                 {
                     segmentMode = CentepedeMode.Poisoned;
+                    yDirection = 1;
                 }
                 else
                 {
@@ -116,7 +117,7 @@ namespace CS5410.CentepedeGame.ObjectsInGame
             int prevY = y;
             move(0, yDirection, gameTime, pixelsToMoveEverySecond);
 
-            List<collisionType> boundaryCollisions = c.checkCollision(this, new List<collisionType>() { collisionType.ScreenBottom});
+            List<collisionType> boundaryCollisions = c.checkCollision(this, new List<collisionType>() { collisionType.ScreenBottom, collisionType.ScreenTop});
             if (verticalCollision(boundaryCollisions))
             {
                 if (verticalCollision(boundaryCollisions))
@@ -138,7 +139,14 @@ namespace CS5410.CentepedeGame.ObjectsInGame
             {
                 segmentMode = CentepedeMode.Normal;
 
-                yDirection *= -1;
+                if (boundaryCollisions.Contains(collisionType.ScreenTop)){
+                    yDirection = 1;
+                }
+
+                if (boundaryCollisions.Contains(collisionType.ScreenBottom))
+                {
+                    yDirection = -1;
+                }
 
                 return true;
             }

@@ -40,6 +40,7 @@ namespace CS5410.CentepedeGame
         {
             m_font = contentManager.Load<SpriteFont>("Fonts/menu");
 
+            m_model.loadContent(contentManager);
             m_objectRenderer.loadContent(contentManager);
         }
 
@@ -47,7 +48,9 @@ namespace CS5410.CentepedeGame
         {
             m_spriteBatch.Begin();
 
-            m_objectRenderer.renderRect(screen, Color.YellowGreen);
+            m_objectRenderer.Update(gameTime);
+
+            m_objectRenderer.renderRect(screen, Color.CornflowerBlue);
 
             renderPlayer(gameTime);
 
@@ -64,13 +67,15 @@ namespace CS5410.CentepedeGame
         }
 
         public void renderPlayer(GameTime gameTime) {
-            m_objectRenderer.renderObject(gameTime,m_model.player,Color.White);
+            m_objectRenderer.renderPlayer(m_model.player);
         }
         public void renderMushrooms(GameTime gameTime) {
             foreach (Mushroom m in m_model.mushrooms.mushrooms) {
                 renderMushroom(gameTime, m);
             }
         }
+
+
 
         public void renderOptionals(GameTime gameTime)
         {
@@ -88,15 +93,15 @@ namespace CS5410.CentepedeGame
         }
 
         public void renderFlea(GameTime gameTime, Flea f) {
-            m_objectRenderer.renderObject(gameTime, f, Color.Beige);
+            m_objectRenderer.renderFlea( f);
         }
         public void renderScorpion(GameTime gameTime, Scorpion s)
         {
-            m_objectRenderer.renderObject(gameTime, s, Color.Purple);
+            m_objectRenderer.renderScorpion( s);
         }
         public void renderSpider(GameTime gameTime, Spider s)
         {
-            m_objectRenderer.renderObject(gameTime, s, Color.DarkBlue);
+            m_objectRenderer.renderSpider(s);
         }
 
         public void renderBullets(GameTime gameTime)
@@ -109,18 +114,12 @@ namespace CS5410.CentepedeGame
 
         public void renderBullet(GameTime gameTime, Bullet b)
         {
-            m_objectRenderer.renderObject(gameTime, b, Color.AliceBlue);
+            m_objectRenderer.renderObject( b, Color.AliceBlue);
         }
 
-    public void renderMushroom(GameTime gameTime, Mushroom m)
+        public void renderMushroom(GameTime gameTime, Mushroom m)
         {
-            if (m.type == mushroomType.normal)
-            {
-                m_objectRenderer.renderObject(gameTime, m, Color.Yellow);
-            }
-            else {
-                m_objectRenderer.renderObject(gameTime, m, Color.LightGoldenrodYellow);
-            }
+            m_objectRenderer.renderMushroom( m);
         }
 
         public void renderCentepede(GameTime gameTime) {
@@ -130,7 +129,7 @@ namespace CS5410.CentepedeGame
         }
         public void renderCentepedeSegment(GameTime gameTime, CentepedeSegment s)
         {
-            m_objectRenderer.renderObject(gameTime, s, s.segmentType == SegmentType.Head ? Color.Red: Color.Green);
+            m_objectRenderer.renderSegment( s);
         }
 
         public void renderUI() { 
@@ -140,10 +139,59 @@ namespace CS5410.CentepedeGame
             int y_pos = 0;
             for (int i = 0; i < lives; i++)
             {
-                m_objectRenderer.renderRect(new Rectangle(x_pos, y_pos, (int)(m_model.standardWidth*.75), (int)(m_model.standardHeight*.75)), Color.Blue);
+                m_objectRenderer.renderPlayerSprite(new Rectangle(x_pos, y_pos, (int)(m_model.standardWidth*.75), (int)(m_model.standardHeight*.75)));
                 x_pos += (int)(m_model.standardWidth);
             }
 
+            String text = "Score: " + m_model.score;
+            Vector2 stringSize = m_font.MeasureString(text);
+            Vector2 pos =  new Vector2(m_graphics.PreferredBackBufferWidth / 2 - stringSize.X / 2, 0 + stringSize.Y / 2);
+            fancyDraw(text, pos);
         }
-    }
+
+        public void fancyDraw(String text, Vector2 pos)
+        {
+
+            Vector2 newPos = pos;
+
+            newPos.X -= 1;
+            newPos.Y -= 1;
+
+            SimpleDraw(
+                    text,
+                    newPos,
+                    Color.White);
+
+
+
+            newPos = pos;
+
+            newPos.X += 1;
+            newPos.Y += 1;
+            SimpleDraw(
+                    text,
+                    newPos,
+                    Color.White);
+
+
+
+
+            SimpleDraw(
+                    text,
+                    pos,
+                    Color.Black);
+        }
+
+        public void SimpleDraw(String text, Vector2 pos, Color c)
+        {
+            
+            m_spriteBatch.DrawString(
+                    m_font,
+                    text,
+                    pos,
+                    
+                    c);
+        }
+}
+
 }

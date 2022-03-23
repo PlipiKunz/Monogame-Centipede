@@ -71,7 +71,7 @@ namespace CS5410.CentepedeGame.ObjectsInGame
             }
             else if (y < (mg.upperY / 3))
             {
-                yDirection *= -1;
+                yDirection = 1;
             }
             else
             {

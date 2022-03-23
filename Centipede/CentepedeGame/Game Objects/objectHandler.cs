@@ -33,7 +33,7 @@ namespace CS5410.CentepedeGame.ObjectsInGame
         public void update(GameTime gameTime, Collider c) {
             if (f == null)
             {
-                if (random.NextDouble() > .99) { 
+                if (random.NextDouble() > .995) { 
                     f = new Flea();
 
                     int fleaX = random.Next(0, mushroomGrid.columns) * mushroomGrid.standardWidth;
@@ -57,7 +57,7 @@ namespace CS5410.CentepedeGame.ObjectsInGame
                     s = new Scorpion();
 
                     int scorpX = 0;
-                    int scorpY = random.Next(0, mushroomGrid.rows/2) * mushroomGrid.standardWidth; ;
+                    int scorpY = random.Next(2, 2*mushroomGrid.rows/3) * mushroomGrid.standardWidth; ;
 
                     s.initialize(scorpX, scorpY, mushroomGrid.standardWidth, mushroomGrid.standardHeight);
                 }
@@ -74,7 +74,7 @@ namespace CS5410.CentepedeGame.ObjectsInGame
 
             if (sp == null)
             {
-                if (random.NextDouble() > .99)
+                if (random.NextDouble() > .999)
                 {
                     sp = new Spider();
 

@@ -6,7 +6,10 @@ using System.Text;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
+using Microsoft.Xna.Framework.Audio;
 using Microsoft.Xna.Framework.Input;
+
+
 
 using CS5410.CentepedeGame.ObjectsInGame;
 
@@ -36,8 +39,13 @@ namespace CS5410.CentepedeGame
         public List<Bullet> bullets;
         public objectHandler oh;
 
+        private SoundEffect m_sound1;
+        private SoundEffect m_sound2;
+
         public void initialize(Vector2 resolution)
         {
+
+
             collider = new Collider();
             collider.initialize(this);
 
@@ -56,6 +64,18 @@ namespace CS5410.CentepedeGame
             bullets = new List<Bullet>();
             oh = new objectHandler();
             reset();
+
+
+
+        }
+        public void loadContent(ContentManager contentManager)
+        {
+            // reference: https://freesound.org/people/InspectorJ/sounds/448226/
+            m_sound1 = contentManager.Load<SoundEffect>("Audio/effect");
+
+
+            // reference: https://freesound.org/people/lezaarth/sounds/232817/
+            m_sound2 = contentManager.Load<SoundEffect>("Audio/effect3");
         }
 
         public void reset()
@@ -124,6 +144,7 @@ namespace CS5410.CentepedeGame
                 resetScreen();
                 player.hit = false;
                 paused = true;
+                m_sound1.Play();
             }
         }
 
@@ -153,6 +174,8 @@ namespace CS5410.CentepedeGame
                     segmentsToRemove.Add(i);
                     //add mushroom
                     mushrooms.addMushroomSpecificLoc(segment.x, segment.y);
+
+                    m_sound1.Play();
                 }
 
                 prevSegment = segment;
@@ -196,6 +219,7 @@ namespace CS5410.CentepedeGame
                 if (oh.f.hit) {
                     score += 200;
                       oh.f = null;
+                    m_sound1.Play();
                 }
             }
         }
@@ -208,6 +232,7 @@ namespace CS5410.CentepedeGame
                 {
                     score += 1000;
                     oh.s = null;
+                    m_sound1.Play();
                 }
             }
         }
@@ -231,6 +256,7 @@ namespace CS5410.CentepedeGame
                     }
 
                     oh.sp = null;
+                    m_sound1.Play();
                 }
             }
         }
@@ -245,6 +271,7 @@ namespace CS5410.CentepedeGame
                 if (m.hit) { 
                     m.hit = false;
                         score += 4;
+                    m_sound1.Play();
                 }
 
                 if (m.lives <= 0)
@@ -297,7 +324,8 @@ namespace CS5410.CentepedeGame
 
                 Bullet b = new Bullet();
                 b.initialize((player.x + (player.width / 2)), player.y - bulletHeight, bulletWidth, bulletHeight);
-                bullets.Add(b);
+                bullets.Add(b); 
+                m_sound2.Play();
             }
         }
 
